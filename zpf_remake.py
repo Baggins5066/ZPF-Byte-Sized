@@ -1,13 +1,14 @@
-# Zombie Pro Fisher - Byte Sized (Remake)
 import random
 import time
 
+# Prints text slowly, character by character, for dramatic effect
 def slow_print(text, delay=0.02):
     for c in text:
         print(c, end='', flush=True)
         time.sleep(delay)
     print()
 
+# Prompts the user to choose from a set of options, returns the selected key
 def choose(prompt, options):
     while True:
         slow_print(prompt)
@@ -18,6 +19,7 @@ def choose(prompt, options):
             return choice
         slow_print("Invalid entry.")
 
+# Player class holds all player stats and inventory
 class Player:
     def __init__(self):
         self.health = 8
@@ -38,6 +40,7 @@ class Player:
         self.location = "Forest"
         self.turns = 0
 
+    # Prints current player stats
     def stats(self):
         print(f"\nNAME: {self.name}")
         print(f"HEALTH: {self.health}/{self.max_health}")
@@ -53,6 +56,7 @@ class Player:
         print(f"ARMOR: {', '.join(self.armor) if self.armor else 'None'}")
         print(f"FISH: {', '.join(self.fish) if self.fish else 'None'}\n")
 
+    # Updates stats, handles hunger and health limits
     def update_stats(self):
         if self.hunger > 10:
             self.hunger = 10
@@ -63,8 +67,10 @@ class Player:
             self.health -= 1
             print("You are starving! -1 HP")
 
+# List of possible locations
 LOCATIONS = ["Forest", "Lake", "Nuclear Plant", "Shack"]
 
+# Table of fish, their roll ranges, and rarity
 FISH_TABLE = [
     ("Catfish", 1, 10, "common"),
     ("Smallmouth Bass", 11, 20, "common"),
@@ -81,6 +87,7 @@ FISH_TABLE = [
     ("Mighty Bluegill", 72, 74, "legendary"),
 ]
 
+# Weapon list: (name, damage, cost)
 WEAPONS = [
     ("Fists", 1, 0),
     ("Knife", 1, 5),
@@ -95,6 +102,7 @@ WEAPONS = [
     ("Spiked Bat", 10, 600),
 ]
 
+# Fishing rods: (name, luck bonus, cost)
 RODS = [
     ("Stick And String", 0, 0),
     ("Common Rod", 1, 5),
@@ -104,6 +112,7 @@ RODS = [
     ("Jody Barrs Rod", 5, 250),
 ]
 
+# Armor items: (name, type, value, cost)
 ARMOR = [
     ("Medkit", "heal", 2, 10),
     ("Nurse Aimees Power Kit", "fullheal", 0, 30),
@@ -112,6 +121,7 @@ ARMOR = [
     ("Clemuratan Helmet", "maxhp", 3, 150),
 ]
 
+# Food items: (name, hunger value, cost)
 FOOD = [
     ("Sage Cookies", 2, 8),
     ("Mrs Sierras Pasta", 4, 11),
@@ -119,6 +129,7 @@ FOOD = [
     ("Missys Cookbook", "cookbook", 0, 50),
 ]
 
+# Handles character creation and customization
 def character_creation(player):
     slow_print("Welcome to Zombie Pro Fisher - Byte Sized!")
     time.sleep(1)
@@ -148,6 +159,7 @@ def character_creation(player):
     time.sleep(1)
     slow_print(f"You arrive at the {player.location.upper()}.")
 
+# Handles random zombie encounters based on location
 def zombie_encounter(player):
     if player.location == "Shack": return
     spawn_chance = random.randint(0, 10)
@@ -184,6 +196,7 @@ def zombie_encounter(player):
             return True
     return False
 
+# Handles foraging for food and items
 def forage(player):
     if player.location == "Nuclear Plant":
         slow_print("You're not sure there's anything safe to eat here...")
@@ -222,6 +235,7 @@ def forage(player):
     elif result >= 40:
         slow_print("You find a bright green triangular shape. It is crushed and deformed. On it is written '663D'. You hang onto it. It seems like good luck.")
 
+# Handles fishing action and fish catching logic
 def fishing(player):
     player.hunger -= 1
     roll = random.randint(-74, 74) + int(player.luck * 1.9)
@@ -236,6 +250,7 @@ def fishing(player):
     else:
         slow_print("You caught nothing today...")
 
+# Handles gathering resources (wood, stone, machine parts)
 def gather(player, resource):
     amount = random.randint(0, 5)
     slow_print(f"You gathered {amount} pieces of {resource}.")
@@ -247,6 +262,7 @@ def gather(player, resource):
         player.machineparts += amount
     player.hunger -= 1
 
+# Handles shop interactions, buying/selling/crafting
 def shop(player):
     slow_print("Mr Hutchinson greets you with a warm nod and a gruffy smile.")
     while True:
@@ -259,6 +275,7 @@ def shop(player):
             "6": "Goodbye"
         })
         if action == "1":
+            # Weapon shop
             for i, (name, dmg, cost) in enumerate(WEAPONS[1:], 1):
                 print(f"{i}) {name} (+{dmg} DMG) - ${cost}")
             print(f"{len(WEAPONS)}) Go Back")
@@ -274,6 +291,7 @@ def shop(player):
             else:
                 slow_print("Not enough money or invalid choice.")
         elif action == "2":
+            # Fishing goods shop
             rod_options = {str(i+1): f"{rod[0]} (+{rod[1]} Luck) - ${rod[2]}" for i, rod in enumerate(RODS[1:])}
             rod_options[str(len(RODS[1:])+1)] = "Sell your fish"
             rod_options[str(len(RODS[1:])+2)] = "Goodbye"
@@ -301,6 +319,7 @@ def shop(player):
             else:
                 slow_print("Not enough money or invalid choice.")
         elif action == "3":
+            # Armor shop
             for i, (name, typ, val, cost) in enumerate(ARMOR, 1):
                 print(f"{i}) {name} - ${cost}")
             print(f"{len(ARMOR)+1}) Goodbye")
@@ -323,6 +342,7 @@ def shop(player):
             else:
                 slow_print("Not enough money or invalid choice.")
         elif action == "4":
+            # Crafting weapons
             print("1) Knife ($2, 5 wood, 4 stone)")
             print("2) Machete ($5, 6 wood, 10 stone)")
             print("3) Pistol ($10, 8 wood, 5 stone, 5 machine parts)")
@@ -373,6 +393,7 @@ def shop(player):
             else:
                 slow_print("Not enough resources or invalid choice.")
         elif action == "5":
+            # Food shop
             for i, (name, val, cost) in enumerate(FOOD, 1):
                 print(f"{i}) {name} - ${cost}")
             print(f"{len(FOOD)+1}) Goodbye")
@@ -393,6 +414,7 @@ def shop(player):
         elif action == "6":
             break
 
+# Main game loop
 def main():
     player = Player()
     character_creation(player)
@@ -403,6 +425,7 @@ def main():
             break
         print("\nWhat would you like to do?")
         options = {}
+        # Set available actions based on location
         if player.location == "Forest":
             options = {"1": "Forage", "2": "Change location", "3": "Check stats", "4": "Gather wood", "5": "Watch birds"}
         elif player.location == "Lake":
@@ -434,6 +457,7 @@ def main():
             elif player.location == "Shack":
                 shop(player)
         elif choice == "5":
+            # Location-specific events
             if player.location == "Forest":
                 event = random.randint(1, 4)
                 if event == 1:
@@ -467,5 +491,6 @@ def main():
                 slow_print("The fire reminds you of home.")
     slow_print("Game Over. Thanks for playing!")
 
+# Entry point
 if __name__ == "__main__":
     main()
