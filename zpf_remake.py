@@ -122,7 +122,7 @@ FOOD = [
 def character_creation(player):
     slow_print("Welcome to Zombie Pro Fisher - Byte Sized!")
     time.sleep(1)
-    slow_print("\n~*~ Character Customization ~*~\n")
+    slow_print("\n--- Character Customization ---\n")
     # Eye color
     eye = choose("Choose eye color:", {"1": "Blue (+2 luck)", "2": "Brown (+1 damage)", "3": "Green (+2 max health)"})
     if eye == "1": player.luck += 2
