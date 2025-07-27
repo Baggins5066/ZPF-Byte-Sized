@@ -13,7 +13,7 @@ def choose(prompt, options):
         print(prompt)
         for key, desc in options.items():
             print(f"{key}) {desc}")
-        choice = input("> ").strip().upper()
+        choice = input("> ").strip()
         if choice in options:
             return choice
         print("Invalid entry.")
@@ -124,20 +124,20 @@ def character_creation(player):
     time.sleep(1)
     slow_print("\n~*~ Character Customization ~*~\n")
     # Eye color
-    eye = choose("Choose eye color:", {"A": "Blue (+2 luck)", "B": "Brown (+1 damage)", "C": "Green (+2 max health)"})
-    if eye == "A": player.luck += 2
-    elif eye == "B": player.damage += 1
-    elif eye == "C": player.max_health += 2
+    eye = choose("Choose eye color:", {"1": "Blue (+2 luck)", "2": "Brown (+1 damage)", "3": "Green (+2 max health)"})
+    if eye == "1": player.luck += 2
+    elif eye == "2": player.damage += 1
+    elif eye == "3": player.max_health += 2
     # Hair color
-    hair = choose("Choose hair color:", {"A": "Blonde (+2 luck)", "B": "Brown (+1 damage)", "C": "Black (+2 max health)"})
-    if hair == "A": player.luck += 2
-    elif hair == "B": player.damage += 1
-    elif hair == "C": player.max_health += 2
+    hair = choose("Choose hair color:", {"1": "Blonde (+2 luck)", "2": "Brown (+1 damage)", "3": "Black (+2 max health)"})
+    if hair == "1": player.luck += 2
+    elif hair == "2": player.damage += 1
+    elif hair == "3": player.max_health += 2
     # Size
-    size = choose("Choose size:", {"A": "Short (+2 luck)", "B": "Tall (+1 damage)", "C": "Medium (+2 max health)"})
-    if size == "A": player.luck += 2
-    elif size == "B": player.damage += 1
-    elif size == "C": player.max_health += 2
+    size = choose("Choose size:", {"1": "Short (+2 luck)", "2": "Tall (+1 damage)", "3": "Medium (+2 max health)"})
+    if size == "1": player.luck += 2
+    elif size == "2": player.damage += 1
+    elif size == "3": player.max_health += 2
     player.name = input("Now, what is your hero's name? ")
     player.health = player.max_health
     slow_print(f"\nStarting your journey now! Here are your stats:")
@@ -156,8 +156,8 @@ def zombie_encounter(player):
         slow_print("\nZOMBIE ENCOUNTER!")
         while zombie_hp > 0 and player.health > 0:
             print(f"Zombie HP: {zombie_hp} | Your HP: {player.health}")
-            action = choose("What do you do?", {"A": "Attack", "B": "Run away"})
-            if action == "A":
+            action = choose("What do you do?", {"1": "Attack", "2": "Run away"})
+            if action == "1":
                 dmg = random.randint(0, 3) + player.damage
                 slow_print(f"You hit the zombie for {dmg}!")
                 zombie_hp -= dmg
@@ -211,8 +211,8 @@ def forage(player):
     elif result <= 35:
         found = random.choice(WEAPONS[1:])
         slow_print(f"You found a weapon! {found[0]}")
-        action = choose("Take the weapon or scrap it?", {"A": "Take", "B": "Scrap"})
-        if action == "A":
+        action = choose("Take the weapon or scrap it?", {"1": "Take", "2": "Scrap"})
+        if action == "1":
             player.weapon = found[0]
             player.damage = found[1]
         else:
@@ -251,41 +251,41 @@ def shop(player):
     slow_print("Mr Hutchinson greets you with a warm nod and a gruffy smile.")
     while True:
         action = choose("What would you like to do?", {
-            "A": "Buy weapons",
-            "B": "Buy/sell fishing goods",
-            "C": "Armor Shop",
-            "D": "Craft",
-            "E": "Sage Snack Shack",
-            "F": "Goodbye"
+            "1": "Buy weapons",
+            "2": "Buy/sell fishing goods",
+            "3": "Armor Shop",
+            "4": "Craft",
+            "5": "Sage Snack Shack",
+            "6": "Goodbye"
         })
-        if action == "A":
+        if action == "1":
             for i, (name, dmg, cost) in enumerate(WEAPONS[1:], 1):
-                print(f"{chr(64+i)}) {name} (+{dmg} DMG) - ${cost}")
-            print(f"{chr(64+len(WEAPONS))}) Go Back")
-            choice = input("> ").strip().upper()
-            idx = ord(choice) - 65
+                print(f"{i}) {name} (+{dmg} DMG) - ${cost}")
+            print(f"{len(WEAPONS)}) Go Back")
+            choice = input("> ").strip()
+            idx = int(choice) - 1
             if 0 <= idx < len(WEAPONS)-1 and player.money >= WEAPONS[idx+1][2]:
                 player.weapon = WEAPONS[idx+1][0]
                 player.damage = WEAPONS[idx+1][1]
                 player.money -= WEAPONS[idx+1][2]
                 slow_print(f"You bought {player.weapon}!")
-            elif choice == chr(64+len(WEAPONS)):
+            elif choice == str(len(WEAPONS)):
                 continue
             else:
                 slow_print("Not enough money or invalid choice.")
-        elif action == "B":
-            rod_options = {chr(65+i): f"{rod[0]} (+{rod[1]} Luck) - ${rod[2]}" for i, rod in enumerate(RODS[1:])}
-            rod_options[chr(65+len(RODS[1:]))] = "Sell your fish"
-            rod_options[chr(66+len(RODS[1:]))] = "Goodbye"
+        elif action == "2":
+            rod_options = {str(i+1): f"{rod[0]} (+{rod[1]} Luck) - ${rod[2]}" for i, rod in enumerate(RODS[1:])}
+            rod_options[str(len(RODS[1:])+1)] = "Sell your fish"
+            rod_options[str(len(RODS[1:])+2)] = "Goodbye"
             for k, v in rod_options.items(): print(f"{k}) {v}")
-            choice = input("> ").strip().upper()
-            idx = ord(choice) - 65
+            choice = input("> ").strip()
+            idx = int(choice) - 1
             if 0 <= idx < len(RODS[1:]) and player.money >= RODS[idx+1][2]:
                 player.fishingrod = RODS[idx+1][0]
                 player.luck = RODS[idx+1][1]
                 player.money -= RODS[idx+1][2]
                 slow_print(f"You bought {player.fishingrod}!")
-            elif choice == chr(65+len(RODS[1:])):
+            elif choice == str(len(RODS[1:])+1):
                 # Sell fish
                 rarity_values = {"common": 2, "rare": 4, "epic": 7, "legendary": 10}
                 total = 0
@@ -296,16 +296,16 @@ def shop(player):
                 player.money += total
                 slow_print(f"You sold your fish for ${total}.")
                 player.fish = []
-            elif choice == chr(66+len(RODS[1:])):
+            elif choice == str(len(RODS[1:])+2):
                 continue
             else:
                 slow_print("Not enough money or invalid choice.")
-        elif action == "C":
+        elif action == "3":
             for i, (name, typ, val, cost) in enumerate(ARMOR, 1):
-                print(f"{chr(64+i)}) {name} - ${cost}")
-            print(f"{chr(64+len(ARMOR)+1)}) Goodbye")
-            choice = input("> ").strip().upper()
-            idx = ord(choice) - 65
+                print(f"{i}) {name} - ${cost}")
+            print(f"{len(ARMOR)+1}) Goodbye")
+            choice = input("> ").strip()
+            idx = int(choice) - 1
             if 0 <= idx < len(ARMOR) and player.money >= ARMOR[idx][3]:
                 name, typ, val, cost = ARMOR[idx]
                 if typ == "heal":
@@ -318,33 +318,33 @@ def shop(player):
                     player.armor.append(name)
                 player.money -= cost
                 slow_print(f"You bought {name}!")
-            elif choice == chr(64+len(ARMOR)+1):
+            elif choice == str(len(ARMOR)+1):
                 continue
             else:
                 slow_print("Not enough money or invalid choice.")
-        elif action == "D":
-            print("A) Knife ($2, 5 wood, 4 stone)")
-            print("B) Machete ($5, 6 wood, 10 stone)")
-            print("C) Pistol ($10, 8 wood, 5 stone, 5 machine parts)")
-            print("D) SMG ($20, 7 wood, 10 stone, 10 machine parts)")
-            print("E) Shotgun ($80, 10 wood, 15 stone, 20 machine parts)")
-            print("F) Goodbye")
-            choice = input("> ").strip().upper()
-            if choice == "A" and player.money >= 2 and player.wood >= 5 and player.stone >= 4:
+        elif action == "4":
+            print("1) Knife ($2, 5 wood, 4 stone)")
+            print("2) Machete ($5, 6 wood, 10 stone)")
+            print("3) Pistol ($10, 8 wood, 5 stone, 5 machine parts)")
+            print("4) SMG ($20, 7 wood, 10 stone, 10 machine parts)")
+            print("5) Shotgun ($80, 10 wood, 15 stone, 20 machine parts)")
+            print("6) Goodbye")
+            choice = input("> ").strip()
+            if choice == "1" and player.money >= 2 and player.wood >= 5 and player.stone >= 4:
                 player.weapon = "Knife"
                 player.damage = 1
                 player.money -= 2
                 player.wood -= 5
                 player.stone -= 4
                 slow_print("You crafted a Knife!")
-            elif choice == "B" and player.money >= 5 and player.wood >= 6 and player.stone >= 10:
+            elif choice == "2" and player.money >= 5 and player.wood >= 6 and player.stone >= 10:
                 player.weapon = "Machete"
                 player.damage = 2
                 player.money -= 5
                 player.wood -= 6
                 player.stone -= 10
                 slow_print("You crafted a Machete!")
-            elif choice == "C" and player.money >= 10 and player.wood >= 8 and player.stone >= 5 and player.machineparts >= 5:
+            elif choice == "3" and player.money >= 10 and player.wood >= 8 and player.stone >= 5 and player.machineparts >= 5:
                 player.weapon = "Pistol"
                 player.damage = 3
                 player.money -= 10
@@ -352,7 +352,7 @@ def shop(player):
                 player.stone -= 5
                 player.machineparts -= 5
                 slow_print("You crafted a Pistol!")
-            elif choice == "D" and player.money >= 20 and player.wood >= 7 and player.stone >= 10 and player.machineparts >= 10:
+            elif choice == "4" and player.money >= 20 and player.wood >= 7 and player.stone >= 10 and player.machineparts >= 10:
                 player.weapon = "SMG"
                 player.damage = 4
                 player.money -= 20
@@ -360,7 +360,7 @@ def shop(player):
                 player.stone -= 10
                 player.machineparts -= 10
                 slow_print("You crafted an SMG!")
-            elif choice == "E" and player.money >= 80 and player.wood >= 10 and player.stone >= 15 and player.machineparts >= 20:
+            elif choice == "5" and player.money >= 80 and player.wood >= 10 and player.stone >= 15 and player.machineparts >= 20:
                 player.weapon = "Shotgun"
                 player.damage = 5
                 player.money -= 80
@@ -368,16 +368,16 @@ def shop(player):
                 player.stone -= 15
                 player.machineparts -= 20
                 slow_print("You crafted a Shotgun!")
-            elif choice == "F":
+            elif choice == "6":
                 continue
             else:
                 slow_print("Not enough resources or invalid choice.")
-        elif action == "E":
+        elif action == "5":
             for i, (name, val, cost) in enumerate(FOOD, 1):
-                print(f"{chr(64+i)}) {name} - ${cost}")
-            print(f"F) Goodbye")
-            choice = input("> ").strip().upper()
-            idx = ord(choice) - 65
+                print(f"{i}) {name} - ${cost}")
+            print(f"{len(FOOD)+1}) Goodbye")
+            choice = input("> ").strip()
+            idx = int(choice) - 1
             if 0 <= idx < len(FOOD) and player.money >= FOOD[idx][2]:
                 name, val, cost = FOOD[idx]
                 if name == "Missys Cookbook":
@@ -386,11 +386,11 @@ def shop(player):
                     player.hunger += val
                 player.money -= cost
                 slow_print(f"You bought {name}!")
-            elif choice == "F":
+            elif choice == str(len(FOOD)+1):
                 continue
             else:
                 slow_print("Not enough money or invalid choice.")
-        elif action == "F":
+        elif action == "6":
             break
 
 def main():
@@ -404,27 +404,27 @@ def main():
         print("\nWhat would you like to do?")
         options = {}
         if player.location == "Forest":
-            options = {"A": "Forage", "B": "Change location", "C": "Check stats", "D": "Gather wood", "E": "Watch birds"}
+            options = {"1": "Forage", "2": "Change location", "3": "Check stats", "4": "Gather wood", "5": "Watch birds"}
         elif player.location == "Lake":
-            options = {"A": "Forage", "B": "Change location", "C": "Check stats", "D": "Go fishing", "E": "Gather rocks"}
+            options = {"1": "Forage", "2": "Change location", "3": "Check stats", "4": "Go fishing", "5": "Gather rocks"}
         elif player.location == "Nuclear Plant":
-            options = {"A": "Forage", "B": "Change location", "C": "Check stats", "D": "Gather machine parts", "E": "Listen to echoes"}
+            options = {"1": "Forage", "2": "Change location", "3": "Check stats", "4": "Gather machine parts", "5": "Listen to echoes"}
         elif player.location == "Shack":
-            options = {"A": "Forage", "B": "Change location", "C": "Check stats", "D": "Interact with Mr. Hutchinson", "E": "Rest by the fire"}
+            options = {"1": "Forage", "2": "Change location", "3": "Check stats", "4": "Interact with Mr. Hutchinson", "5": "Rest by the fire"}
         choice = choose("Choose an action:", options)
-        if choice == "A":
+        if choice == "1":
             forage(player)
-        elif choice == "B":
-            locs = {"A": "Forest", "B": "Lake", "C": "Nuclear Plant", "D": "Shack"}
+        elif choice == "2":
+            locs = {"1": "Forest", "2": "Lake", "3": "Nuclear Plant", "4": "Shack"}
             loc_choice = choose("Where would you like to go?", locs)
             if locs[loc_choice] == player.location:
                 slow_print("You can't travel to a place you're already at.")
             else:
                 player.location = locs[loc_choice]
                 slow_print(f"You travel to the {player.location}.")
-        elif choice == "C":
+        elif choice == "3":
             player.stats()
-        elif choice == "D":
+        elif choice == "4":
             if player.location == "Forest":
                 gather(player, "wood")
             elif player.location == "Lake":
@@ -433,7 +433,7 @@ def main():
                 gather(player, "machinery")
             elif player.location == "Shack":
                 shop(player)
-        elif choice == "E":
+        elif choice == "5":
             if player.location == "Forest":
                 event = random.randint(1, 4)
                 if event == 1:
