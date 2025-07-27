@@ -10,13 +10,13 @@ def slow_print(text, delay=0.02):
 
 def choose(prompt, options):
     while True:
-        print(prompt)
+        slow_print(prompt)
         for key, desc in options.items():
-            print(f"{key}) {desc}")
+            slow_print(f"{key}) {desc}")
         choice = input("> ").strip()
         if choice in options:
             return choice
-        print("Invalid entry.")
+        slow_print("Invalid entry.")
 
 class Player:
     def __init__(self):
